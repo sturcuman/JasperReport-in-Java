@@ -10,6 +10,7 @@
   <modules>
     <module>JRMapCollectionDataSource</module>
     <module>JRBeanCollectionDataSource</module>
+    <module>JRResultSetDataSource</module>
   </modules>
 
 </project>
