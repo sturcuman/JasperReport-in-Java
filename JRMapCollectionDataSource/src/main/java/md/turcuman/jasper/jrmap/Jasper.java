@@ -11,6 +11,7 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -20,29 +21,32 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 public class Jasper {
     static Connection connection = null;
     static Properties props = loadProperties();
-    public static void main(String[] args) throws ClassNotFoundException {
+    static Logger logger = Logger.getLogger(Jasper.class.getName());
 
+    public static void main(String[] args) {
 
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
-            throw new ClassNotFoundException("Class not found!");
+            logger.info("SQLDriver not found");
         }
         try {
             connection = DriverManager.getConnection(props.getProperty("db.url"), props.getProperty("db.username"), props.getProperty("db.password"));
         } catch (SQLException e) {
-            System.out.println("Error while connecting with DB");
+            logger.severe("Error while connecting to DB");
             e.printStackTrace();
         }
 
-
         try {
             List<Map<String, ?>> dataList = getDataFromXml();
-            System.out.println("Report generation initialized.");
+
+            logger.info("Report generation initialized");
+
             JasperReport jasperReport = JasperCompileManager.compileReport(props.getProperty("report.template.path"));
             Map<String, Object> parameters = new HashMap<>();
             parameters.put("MAP_DATA_SOURCE", new JRMapCollectionDataSource(dataList));
@@ -50,9 +54,9 @@ public class Jasper {
 
             JasperExportManager.exportReportToPdfFile(jasperPrint, props.getProperty("report.output.path"));
 
-            System.out.println("Report generation complete.");
-
+            logger.info("Report generation complete");
         } catch (JRException e) {
+            logger.severe("Error during report generation");
             e.printStackTrace();
         }
     }
@@ -68,7 +72,8 @@ public class Jasper {
 
             dataList.addAll(dataMaps);
 
-        } catch (Exception e) {
+        } catch (IOException e) {
+            logger.severe("Error reading data from xml file!");
             e.printStackTrace();
         }
 
@@ -77,14 +82,16 @@ public class Jasper {
 
     private static Properties loadProperties() {
         Properties props = new Properties();
+        logger = Logger.getAnonymousLogger();
         try (InputStream input = Jasper.class.getClassLoader().getResourceAsStream("application.properties")) {
             if (input == null) {
-                System.out.println("Sorry, unable to find application.properties");
+                logger.severe("Input from application properties is NULL");
                 return null;
             }
             props.load(input);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (IOException e) {
+            logger.severe("Error reading application properties");
+            e.printStackTrace();
         }
         return props;
     }
