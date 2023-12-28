@@ -1,5 +1,5 @@
 <archetype>
-  <id>JasperReport</id>
+  <id>JRBeanCollectionDataSource</id>
   <sources>
     <source>src/main/java/App.java</source>
   </sources>
