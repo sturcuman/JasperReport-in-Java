@@ -1,4 +1,4 @@
-package md.turcuman.jasper.jrbean;
+package md.turcuman.jasper.jrbean.Model;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonFormat;
