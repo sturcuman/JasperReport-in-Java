@@ -22,40 +22,40 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 public class JRBeanCollectionDataSourceReportApp {
-    private static final Logger logger = Logger.getLogger(JRBeanCollectionDataSourceReportApp.class.getName());
-    private static final Properties properties = loadProperties();
+    private static final Logger LOGGER = Logger.getLogger(JRBeanCollectionDataSourceReportApp.class.getName());
+    private static final Properties PROPERTIES = loadProperties();
 
     public static void main(String[] args) {
 
-        Connection connection = DatabaseConnector.getConnection(properties, logger);
+        Connection connection = DatabaseConnector.getConnection(PROPERTIES, LOGGER);
         if (connection == null) {
-            logger.severe("No database connection available.");
+            LOGGER.severe("No database connection available.");
             return;
         }
 
         try {
-            List<Holiday> holidays = XmlDataReader.readDataFromXml(properties, logger);
+            List<Holiday> holidays = XmlDataReader.readDataFromXml(PROPERTIES, LOGGER);
 
-            logger.info("Report generation initialized");
+            LOGGER.info("Report generation initialized");
 
             JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(holidays);
             JasperReport jasperReport = JasperCompileManager.compileReport(
-                    properties.getProperty("report.template.path")
+                    PROPERTIES.getProperty("report.template.path")
             );
             Map<String, Object> parameters = new HashMap<>();
             parameters.put("REPORT_CONNECTION", connection);
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
 
-            JasperExportManager.exportReportToPdfFile(jasperPrint, properties.getProperty("report.output.path"));
+            JasperExportManager.exportReportToPdfFile(jasperPrint, PROPERTIES.getProperty("report.output.path"));
 
-            logger.info("Report generated successfully.");
+            LOGGER.info("Report generated successfully.");
         } catch (JRException e) {
-            logger.severe("Error during report generation: " + e.getMessage());
+            LOGGER.severe("Error during report generation: " + e.getMessage());
         } finally {
             try {
                 connection.close();
             } catch (SQLException e) {
-                logger.severe("Error closing the database connection: " + e.getMessage());
+                LOGGER.severe("Error closing the database connection: " + e.getMessage());
             }
         }
     }
@@ -65,12 +65,12 @@ public class JRBeanCollectionDataSourceReportApp {
         try (InputStream input = JRBeanCollectionDataSourceReportApp.class.getClassLoader()
                 .getResourceAsStream("application.properties")) {
             if (input == null) {
-                logger.severe("Input from application properties is NULL");
+                LOGGER.severe("Input from application properties is NULL");
                 return null;
             }
             properties.load(input);
         } catch (IOException e) {
-            logger.severe("Error reading application properties" + e.getMessage());
+            LOGGER.severe("Error reading application properties" + e.getMessage());
         }
         return properties;
     }
