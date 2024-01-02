@@ -1,4 +1,4 @@
-package md.turcuman.jasper.jrbean.Utils;
+package md.turcuman.dynamicreport.crosstab.Utils;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -23,4 +23,3 @@ public class DatabaseConnector {
     }
 
 }
-

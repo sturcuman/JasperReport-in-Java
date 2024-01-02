@@ -11,6 +11,8 @@
     <module>JRMapCollectionDataSource</module>
     <module>JRBeanCollectionDataSource</module>
     <module>JRResultSetDataSource</module>
+    <module>DynamicReport</module>
+    <module>DynamicReportCrossTab</module>
   </modules>
 
 </project>
