@@ -5,6 +5,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ public class XmlDataReader {
             List<Map<String, Object>> dataMaps = xmlMapper.readValue(
                     new File(properties.getProperty("xml.data.path")),
                     new TypeReference<List<Map<String, Object>>>() {});
+
             dataList.addAll(dataMaps);
         } catch (IOException e) {
             logger.severe("Error reading data from xml file: " + e.getMessage());

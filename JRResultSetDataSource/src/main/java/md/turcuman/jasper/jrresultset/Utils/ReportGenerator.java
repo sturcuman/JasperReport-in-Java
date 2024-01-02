@@ -7,6 +7,7 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.view.JasperViewer;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -32,6 +33,7 @@ public class ReportGenerator {
             parameters.put("REPORT_CONNECTION", connection);
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, resultSetDataSource);
             JasperExportManager.exportReportToPdfFile(jasperPrint, properties.getProperty("report.output.path"));
+            JasperViewer.viewReport(jasperPrint);
 
             logger.info("Report generated successfully.");
         } catch (SQLException | JRException e) {

@@ -1,13 +1,10 @@
 package md.turcuman.jasper.jrbean.Model;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.sql.Date;
 
 @Getter
 @Setter
@@ -16,12 +13,13 @@ import java.sql.Date;
 public class Holiday {
 
     @JsonAlias("NAME")
-    private String name;
+    private String NAME;
+
     @JsonAlias("DATA")
-    @JsonFormat(pattern = "MM/dd/yyyy")
-    private Date data;
+    private String DATA;
+
     @JsonAlias("COUNTRY")
-    private String country;
+    private String COUNTRY;
 
 
 }

@@ -1,7 +1,6 @@
 package md.turcuman.jasper.jrbean;
 
 import md.turcuman.jasper.jrbean.Model.Holiday;
-import md.turcuman.jasper.jrbean.Utils.DatabaseConnector;
 import md.turcuman.jasper.jrbean.Utils.XmlDataReader;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -10,6 +9,8 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +19,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -27,14 +29,9 @@ public class JRBeanCollectionDataSourceReportApp {
 
     public static void main(String[] args) {
 
-        Connection connection = DatabaseConnector.getConnection(PROPERTIES, LOGGER);
-        if (connection == null) {
-            LOGGER.severe("No database connection available.");
-            return;
-        }
 
         try {
-            List<Holiday> holidays = XmlDataReader.readDataFromXml(PROPERTIES, LOGGER);
+            List<Holiday> holidays = XmlDataReader.readDataFromXml(Objects.requireNonNull(PROPERTIES), LOGGER);
 
             LOGGER.info("Report generation initialized");
 
@@ -42,21 +39,18 @@ public class JRBeanCollectionDataSourceReportApp {
             JasperReport jasperReport = JasperCompileManager.compileReport(
                     PROPERTIES.getProperty("report.template.path")
             );
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("REPORT_CONNECTION", connection);
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(
+                    jasperReport,
+                    null,
+                    dataSource
+            );
 
             JasperExportManager.exportReportToPdfFile(jasperPrint, PROPERTIES.getProperty("report.output.path"));
+            JasperViewer.viewReport(jasperPrint);
 
             LOGGER.info("Report generated successfully.");
         } catch (JRException e) {
             LOGGER.severe("Error during report generation: " + e.getMessage());
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                LOGGER.severe("Error closing the database connection: " + e.getMessage());
-            }
         }
     }
 

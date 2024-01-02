@@ -16,7 +16,7 @@ public class JRResultSetDataSourceApp {
     private static final Properties PROPERTIES = loadProperties();
 
     public static void main(String[] args) {
-        try (Connection connection = DatabaseConnector.getConnection(PROPERTIES, LOGGER)) {
+        try (Connection connection = DatabaseConnector.getConnection(Objects.requireNonNull(PROPERTIES), LOGGER)) {
             if (connection == null) {
                 LOGGER.severe("No database connection available.");
                 return;
