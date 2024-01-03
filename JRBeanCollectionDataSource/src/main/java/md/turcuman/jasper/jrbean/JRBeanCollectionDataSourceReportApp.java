@@ -9,26 +9,21 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 import net.sf.jasperreports.view.JasperViewer;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Logger;
+
 
 public class JRBeanCollectionDataSourceReportApp {
     private static final Logger LOGGER = Logger.getLogger(JRBeanCollectionDataSourceReportApp.class.getName());
     private static final Properties PROPERTIES = loadProperties();
 
     public static void main(String[] args) {
-
 
         try {
             List<Holiday> holidays = XmlDataReader.readDataFromXml(Objects.requireNonNull(PROPERTIES), LOGGER);
@@ -68,4 +63,5 @@ public class JRBeanCollectionDataSourceReportApp {
         }
         return properties;
     }
+
 }

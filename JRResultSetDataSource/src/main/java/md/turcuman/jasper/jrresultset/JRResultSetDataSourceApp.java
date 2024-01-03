@@ -41,4 +41,5 @@ public class JRResultSetDataSourceApp {
         }
         return properties;
     }
+
 }

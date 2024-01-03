@@ -40,4 +40,5 @@ public class ReportGenerator {
             logger.severe("Error generating the report: " + e.getMessage());
         }
     }
+
 }

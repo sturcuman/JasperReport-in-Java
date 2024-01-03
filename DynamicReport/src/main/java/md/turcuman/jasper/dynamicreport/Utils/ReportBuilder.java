@@ -2,12 +2,8 @@ package md.turcuman.jasper.dynamicreport.Utils;
 
 import net.sf.dynamicreports.report.builder.DynamicReports;
 import net.sf.dynamicreports.report.builder.column.ColumnBuilder;
-import net.sf.dynamicreports.report.builder.column.Columns;
-import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
 import net.sf.dynamicreports.report.builder.component.Components;
 import net.sf.dynamicreports.report.builder.component.HorizontalListBuilder;
-import net.sf.dynamicreports.report.builder.component.ImageBuilder;
-import net.sf.dynamicreports.report.builder.component.TextFieldBuilder;
 import net.sf.dynamicreports.report.builder.datatype.DataTypes;
 import net.sf.dynamicreports.report.builder.style.StyleBuilder;
 import net.sf.dynamicreports.report.constant.HorizontalAlignment;
@@ -19,24 +15,19 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
-import java.util.Date;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import static net.sf.dynamicreports.report.builder.DynamicReports.cmp;
-import static net.sf.dynamicreports.report.builder.DynamicReports.stl;
 
 public class ReportBuilder {
 
     private static final Logger LOGGER = Logger.getLogger(ReportBuilder.class.getName());
     private static final Properties PROPERTIES = loadProperties();
-
-    private Connection connection;
+    private static final Connection CONNECTION = DatabaseConnector.getConnection(PROPERTIES, LOGGER);
 
     public ReportBuilder() {
-        connection = DatabaseConnector.getConnection(Objects.requireNonNull(PROPERTIES), LOGGER);
-        if (connection == null) {
+        if (CONNECTION == null) {
             LOGGER.severe("No database connection available.");
             throw new IllegalStateException("No database connection available.");
         }
@@ -44,20 +35,21 @@ public class ReportBuilder {
 
     public void build() {
         try {
-            // Initialize the report generation
+
             LOGGER.info("Report generation initialized.");
 
-            // Build the report
             DynamicReports.report()
-                    .setTemplate(DynamicReports.template().setColumnStyle(createColumnDataStyle()).setColumnTitleStyle(createColumnHeaderStyle()))
+                    .setTemplate(DynamicReports
+                            .template()
+                            .setColumnStyle(createColumnDataStyle())
+                            .setColumnTitleStyle(createColumnHeaderStyle()))
                     .title(createTitleComponent())
                     .columns(createColumns())
                     .pageFooter(createPageFooterComponent())
-                    .setDataSource("SELECT * FROM holidays", connection)
+                    .setDataSource("SELECT * FROM holidays", CONNECTION)
                     .show()
                     .toPdf(new FileOutputStream(Objects.requireNonNull(PROPERTIES).getProperty("report.output.path")));
 
-            // Log success
             LOGGER.info("Report generated successfully.");
         } catch (FileNotFoundException e) {
             LOGGER.severe("Error exporting report as .PDF " + e.getMessage());
@@ -72,9 +64,11 @@ public class ReportBuilder {
         return Components.horizontalList()
                 .add(
                         Components.text("Holidays").setStyle(titleStyle).setFixedWidth(400),
-                        Components.image("C:/Users/crme126/Downloads/download.png").setFixedDimension(170, 59)
+                        Components.image(PROPERTIES.getProperty("image.path")).setFixedDimension(170, 59)
                 ).newRow()
-                .add(Components.filler().setStyle(DynamicReports.stl.style().setTopBorder(DynamicReports.stl.pen2Point())));
+                .add(
+                        Components.filler().setStyle(DynamicReports.stl.style()
+                                .setTopBorder(DynamicReports.stl.pen2Point())));
     }
 
     private StyleBuilder createTitleStyle() {

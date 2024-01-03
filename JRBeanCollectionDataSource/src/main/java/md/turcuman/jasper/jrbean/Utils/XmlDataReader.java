@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+
 public class XmlDataReader {
 
     public static List<Holiday> readDataFromXml(Properties properties, Logger logger) {
@@ -24,4 +25,5 @@ public class XmlDataReader {
         }
         return holidays;
     }
+
 }

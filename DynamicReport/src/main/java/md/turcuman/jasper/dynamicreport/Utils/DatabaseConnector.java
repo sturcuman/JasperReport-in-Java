@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+
 public class DatabaseConnector {
 
     public static Connection getConnection(Properties properties, Logger logger) {

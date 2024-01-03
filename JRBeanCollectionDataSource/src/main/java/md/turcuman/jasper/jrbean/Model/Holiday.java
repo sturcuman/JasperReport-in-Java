@@ -1,15 +1,12 @@
 package md.turcuman.jasper.jrbean.Model;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class Holiday {
 
     @JsonAlias("NAME")
@@ -20,6 +17,5 @@ public class Holiday {
 
     @JsonAlias("COUNTRY")
     private String COUNTRY;
-
 
 }

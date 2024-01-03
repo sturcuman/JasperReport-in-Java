@@ -25,11 +25,12 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+
 public class ReportBuilder {
 
     private static final Logger LOGGER = Logger.getLogger(ReportBuilder.class.getName());
     private static final Properties PROPERTIES = loadProperties();
-    private static final Connection CONNECTION = DatabaseConnector.getConnection(Objects.requireNonNull(PROPERTIES), LOGGER);
+    private static final Connection CONNECTION = DatabaseConnector.getConnection(PROPERTIES, LOGGER);
 
     public ReportBuilder() {
         if (CONNECTION == null) {
@@ -72,9 +73,21 @@ public class ReportBuilder {
     }
 
     private ComponentBuilder<?, ?> createBarChart() {
-        TextColumnBuilder<String> monthColumn = DynamicReports.col.column("Month", "month", DataTypes.stringType());
-        TextColumnBuilder<Integer> italyHolidayCountColumn = DynamicReports.col.column("Italy", "italy_holiday_count", DataTypes.integerType());
-        TextColumnBuilder<Integer> moldovaHolidayCountColumn = DynamicReports.col.column("Moldova", "moldova_holiday_count", DataTypes.integerType());
+        TextColumnBuilder<String> monthColumn = DynamicReports.col.column(
+                "Month",
+                "month",
+                DataTypes.stringType()
+        );
+        TextColumnBuilder<Integer> italyHolidayCountColumn = DynamicReports.col.column(
+                "Italy",
+                "italy_holiday_count",
+                DataTypes.integerType()
+        );
+        TextColumnBuilder<Integer> moldovaHolidayCountColumn = DynamicReports.col.column(
+                "Moldova",
+                "moldova_holiday_count",
+                DataTypes.integerType()
+        );
 
         return DynamicReports.cht.barChart()
                 .setCategory(monthColumn)
