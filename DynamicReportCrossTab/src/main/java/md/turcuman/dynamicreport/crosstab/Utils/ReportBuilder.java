@@ -66,10 +66,11 @@ public class ReportBuilder {
 
     private CrosstabBuilder createCrosstab() {
         return DynamicReports.ctab.crosstab()
-                .headerCell(Components.text("State/Month"))
+                .headerCell(Components.text("State/Month").setWidth(60))
                 .rowGroups(createRowGroup())
                 .columnGroups(createColumnGroup())
-                .measures(createMeasure());
+                .measures(createMeasure())
+                .setCellWidth(75);
     }
 
     private ComponentBuilder<?, ?> createBarChart() {
@@ -104,7 +105,7 @@ public class ReportBuilder {
 
     private CrosstabRowGroupBuilder<String> createRowGroup() {
         return DynamicReports.ctab.rowGroup("country", String.class)
-                .setHeaderWidth(50);
+                .setHeaderWidth(60);
     }
 
     private CrosstabColumnGroupBuilder<String> createColumnGroup() {
@@ -121,7 +122,7 @@ public class ReportBuilder {
     private String getCrossTabDataSourceQuery() {
         return "SELECT id, country, TO_CHAR(DATA,'mm/yyyy') as month " +
                 "FROM holidays " +
-                "where to_char(data, 'YYYY') = '2017'";
+                "where to_char(data, 'YYYY') = '2021'";
     }
 
     private String getBarChartDataSourceQuery() {

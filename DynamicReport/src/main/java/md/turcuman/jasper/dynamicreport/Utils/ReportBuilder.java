@@ -7,6 +7,8 @@ import net.sf.dynamicreports.report.builder.component.HorizontalListBuilder;
 import net.sf.dynamicreports.report.builder.datatype.DataTypes;
 import net.sf.dynamicreports.report.builder.style.StyleBuilder;
 import net.sf.dynamicreports.report.constant.HorizontalAlignment;
+import net.sf.dynamicreports.report.constant.HorizontalImageAlignment;
+import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
 import net.sf.dynamicreports.report.exception.DRException;
 
 import java.awt.*;
@@ -15,6 +17,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -60,21 +64,29 @@ public class ReportBuilder {
 
     private HorizontalListBuilder createTitleComponent() {
         StyleBuilder titleStyle = createTitleStyle();
-
         return Components.horizontalList()
                 .add(
-                        Components.text("Holidays").setStyle(titleStyle).setFixedWidth(400),
-                        Components.image(PROPERTIES.getProperty("image.path")).setFixedDimension(170, 59)
-                ).newRow()
-                .add(
-                        Components.filler().setStyle(DynamicReports.stl.style()
-                                .setTopBorder(DynamicReports.stl.pen2Point())));
+                        Components.horizontalList()
+                                .add(
+                                        Components.text("Holidays")
+                                                .setStyle(titleStyle)
+                                                .setHorizontalTextAlignment(HorizontalTextAlignment.LEFT),
+                                        Components.image(PROPERTIES.getProperty("image.path"))
+                                                .setHorizontalImageAlignment(HorizontalImageAlignment.RIGHT)
+                                                .setFixedDimension(170, 59)
+                                )
+                                .setStyle(titleStyle)
+                )
+                .newRow()
+                .add(Components.filler().setStyle(
+                        DynamicReports.stl.style().setTopBorder(DynamicReports.stl.pen2Point()))
+                );
     }
 
     private StyleBuilder createTitleStyle() {
         return DynamicReports.stl.style()
                 .bold()
-                .setHorizontalAlignment(HorizontalAlignment.CENTER)
+                .setHorizontalAlignment(HorizontalAlignment.LEFT)
                 .setBackgroundColor(new Color(0, 102, 153))
                 .setForegroundColor(Color.WHITE)
                 .setFontSize(24)
@@ -84,32 +96,45 @@ public class ReportBuilder {
     private StyleBuilder createColumnHeaderStyle() {
         return DynamicReports.stl.style()
                 .bold()
-                .setBackgroundColor(new Color(0, 102, 153))
-                .setForegroundColor(Color.WHITE)
-                .setBorder(DynamicReports.stl.pen1Point())
+                .setFontSize(12)
+                .setBackgroundColor(new Color(230, 230, 230))
+                .setForegroundColor(new Color(0, 102, 153))
                 .setHorizontalAlignment(HorizontalAlignment.CENTER);
     }
 
     private StyleBuilder createColumnDataStyle() {
         return DynamicReports.stl.style()
-                .setBorder(DynamicReports.stl.pen1Point());
+                .setBottomBorder(DynamicReports.stl.pen1Point())
+                .setFontSize(12)
+                .setHorizontalAlignment(HorizontalAlignment.CENTER);
     }
 
     private ColumnBuilder<?, ?>[] createColumns() {
         return new ColumnBuilder[]{
                 DynamicReports.col.column("Country", "country", DataTypes.stringType()),
                 DynamicReports.col.column("Name", "name", DataTypes.stringType()),
-                DynamicReports.col.column("Date", "data", DataTypes.dateType())
+                DynamicReports.col.column("Data", "data", DataTypes.dateType())
         };
     }
 
     private HorizontalListBuilder createPageFooterComponent() {
         StyleBuilder footerStyle = DynamicReports.stl.style().setFontSize(10);
+        StyleBuilder footerTextStyle = DynamicReports.stl.style(footerStyle)
+                .setHorizontalAlignment(HorizontalAlignment.LEFT);
+        StyleBuilder footerPageStyle = DynamicReports.stl.style(footerStyle)
+                .setHorizontalAlignment(HorizontalAlignment.RIGHT);
 
-        return Components.horizontalList(
-                Components.text("Page ").setStyle(footerStyle),
-                Components.pageXofY().setStyle(footerStyle)
-        );
+        HorizontalListBuilder footer = Components.horizontalList()
+                .add(
+                        Components.text(new SimpleDateFormat("EEEE dd")
+                                .format(new Date())).setStyle(footerTextStyle),
+                        Components.horizontalGap(10),
+                        Components.pageXofY().setStyle(footerPageStyle)
+                )
+                .newRow()
+                .add(Components.line());
+
+        return footer;
     }
 
 
